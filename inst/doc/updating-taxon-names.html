@@ -464,10 +464,13 @@ APCalign</h1>
 
 
 
-<div id="aligning-taxa-with-apc-and-apni" class="section level1">
-<h1>Aligning taxa with APC and APNI</h1>
-<p>XXXX</p>
-<p>The following</p>
+<div id="aligning-taxon-names-with-taxon-conceptsnames-in-apc-and-apni" class="section level1">
+<h1>Aligning taxon names with taxon concepts/names in APC and APNI</h1>
+<p>The following table indicates the rules for each of the 51 separate
+algorithms sequentially applied to attempt to align each submitted name
+to a taxon concept in APC or scientific names in APNI.</p>
+<p>Note, if the table is truncated on your screen, use horizontal scroll
+to view the entire table.</p>
 <table class="table table-striped table-hover table-condensed table-responsive" style="margin-left:30px; width: auto !important; ">
 <thead>
 <tr>
@@ -500,6 +503,98 @@ notes about sequence
 match_01a
 </td>
 <td style="text-align:left;">
+Detect scientific names, including authorship
+</td>
+<td style="text-align:left;">
+original_name
+</td>
+<td style="text-align:left;">
+exact
+</td>
+<td style="text-align:left;">
+APC accepted taxon concepts
+</td>
+<td style="text-align:left;">
+species/infraspecific
+</td>
+<td style="text-align:left;">
+Check if strings are full scientific names, including authorship.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+match_01b
+</td>
+<td style="text-align:left;">
+Detect scientific names, including authorship
+</td>
+<td style="text-align:left;">
+original_name
+</td>
+<td style="text-align:left;">
+exact
+</td>
+<td style="text-align:left;">
+other APC taxon concepts
+</td>
+<td style="text-align:left;">
+species/infraspecific
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+match_01c
+</td>
+<td style="text-align:left;">
+Detect canonical names, lacking authorship
+</td>
+<td style="text-align:left;">
+cleaned_name
+</td>
+<td style="text-align:left;">
+exact
+</td>
+<td style="text-align:left;">
+APC accepted taxon concepts
+</td>
+<td style="text-align:left;">
+species/infraspecific
+</td>
+<td style="text-align:left;">
+Check if strings are taxon names, lacking authorship.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+match_01d
+</td>
+<td style="text-align:left;">
+Detect canonical names, lacking authorship
+</td>
+<td style="text-align:left;">
+cleaned_name
+</td>
+<td style="text-align:left;">
+exact
+</td>
+<td style="text-align:left;">
+other APC taxon concepts
+</td>
+<td style="text-align:left;">
+species/infraspecific
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+match_02a
+</td>
+<td style="text-align:left;">
 Detect <code>genus sp.</code>, <code>genus ssp.</code> and
 <code>genus spp.</code>
 </td>
@@ -522,7 +617,7 @@ within a genus (or family)
 </tr>
 <tr>
 <td style="text-align:left;">
-match_01b
+match_02b
 </td>
 <td style="text-align:left;">
 Detect <code>genus sp.</code>, <code>genus ssp.</code> and
@@ -546,7 +641,7 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_01c
+match_02c
 </td>
 <td style="text-align:left;">
 Detect <code>genus sp.</code>, <code>genus ssp.</code> and
@@ -570,7 +665,7 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_02a
+match_02d
 </td>
 <td style="text-align:left;">
 Detect <code>family sp.</code>, <code>family ssp.</code> and
@@ -707,7 +802,7 @@ no match
 NA
 </td>
 <td style="text-align:left;">
-genus
+NA
 </td>
 <td style="text-align:left;">
 NA
@@ -825,7 +920,7 @@ no match
 NA
 </td>
 <td style="text-align:left;">
-genus
+NA
 </td>
 <td style="text-align:left;">
 NA
@@ -836,13 +931,13 @@ NA
 match_05a
 </td>
 <td style="text-align:left;">
-Detect scientific names, including authorship
+Detect canonical names, lacking authorship
 </td>
 <td style="text-align:left;">
-original_name
+stripped_name
 </td>
 <td style="text-align:left;">
-exact
+fuzzy
 </td>
 <td style="text-align:left;">
 APC accepted taxon concepts
@@ -851,7 +946,7 @@ APC accepted taxon concepts
 species/infraspecific
 </td>
 <td style="text-align:left;">
-Check if strings are full scientific names, including authorship.
+NA
 </td>
 </tr>
 <tr>
@@ -859,98 +954,6 @@ Check if strings are full scientific names, including authorship.
 match_05b
 </td>
 <td style="text-align:left;">
-Detect scientific names, including authorship
-</td>
-<td style="text-align:left;">
-original_name
-</td>
-<td style="text-align:left;">
-exact
-</td>
-<td style="text-align:left;">
-other APC taxon concepts
-</td>
-<td style="text-align:left;">
-species/infraspecific
-</td>
-<td style="text-align:left;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-match_06a
-</td>
-<td style="text-align:left;">
-Detect canonical names, lacking authorship
-</td>
-<td style="text-align:left;">
-cleaned_name
-</td>
-<td style="text-align:left;">
-exact
-</td>
-<td style="text-align:left;">
-APC accepted taxon concepts
-</td>
-<td style="text-align:left;">
-species/infraspecific
-</td>
-<td style="text-align:left;">
-Check if strings are taxon names, lacking authorship.
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-match_06b
-</td>
-<td style="text-align:left;">
-Detect canonical names, lacking authorship
-</td>
-<td style="text-align:left;">
-cleaned_name
-</td>
-<td style="text-align:left;">
-exact
-</td>
-<td style="text-align:left;">
-other APC taxon concepts
-</td>
-<td style="text-align:left;">
-species/infraspecific
-</td>
-<td style="text-align:left;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-match_07a
-</td>
-<td style="text-align:left;">
-Detect canonical names, lacking authorship
-</td>
-<td style="text-align:left;">
-stripped_name
-</td>
-<td style="text-align:left;">
-fuzzy
-</td>
-<td style="text-align:left;">
-APC accepted taxon concepts
-</td>
-<td style="text-align:left;">
-species/infraspecific
-</td>
-<td style="text-align:left;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-match_07b
-</td>
-<td style="text-align:left;">
 Detect canonical names, lacking authorship
 </td>
 <td style="text-align:left;">
@@ -971,7 +974,7 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_08a
+match_05c
 </td>
 <td style="text-align:left;">
 Detect canonical names, lacking authorship
@@ -994,7 +997,7 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_09a
+match_06a
 </td>
 <td style="text-align:left;">
 Detect <code>aff</code>, <code>affinis</code> (affinity to) and align to
@@ -1021,7 +1024,7 @@ to genus.
 </tr>
 <tr>
 <td style="text-align:left;">
-match_09b
+match_06b
 </td>
 <td style="text-align:left;">
 Detect <code>aff</code>, <code>affinis</code> (affinity to) and align to
@@ -1045,7 +1048,7 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_09c
+match_06c
 </td>
 <td style="text-align:left;">
 Detect <code>aff</code>, <code>affinis</code> (affinity to) and align to
@@ -1069,7 +1072,7 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_09d
+match_06d
 </td>
 <td style="text-align:left;">
 Detect <code>aff</code>, <code>affinis</code> (affinity to) and align to
@@ -1093,7 +1096,7 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_09e
+match_06e
 </td>
 <td style="text-align:left;">
 Detect <code>aff</code>, <code>affinis</code> (affinity to), but fail to
@@ -1109,7 +1112,7 @@ no match
 NA
 </td>
 <td style="text-align:left;">
-genus
+NA
 </td>
 <td style="text-align:left;">
 NA
@@ -1117,7 +1120,7 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_10a
+match_07a
 </td>
 <td style="text-align:left;">
 Detect canonical names, lacking authorship
@@ -1141,7 +1144,7 @@ imprecise fuzzy matching
 </tr>
 <tr>
 <td style="text-align:left;">
-match_10b
+match_07b
 </td>
 <td style="text-align:left;">
 Detect canonical names, lacking authorship
@@ -1164,7 +1167,7 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_11a
+match_08a
 </td>
 <td style="text-align:left;">
 Detect <code>x</code> (hybrid taxon) and align to genus
@@ -1189,7 +1192,7 @@ be aligned to genus.
 </tr>
 <tr>
 <td style="text-align:left;">
-match_11b
+match_08b
 </td>
 <td style="text-align:left;">
 Detect <code>x</code> (hybrid taxon) and align to genus
@@ -1212,7 +1215,7 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_11c
+match_08c
 </td>
 <td style="text-align:left;">
 Detect <code>x</code> (hybrid taxon) and align to genus
@@ -1235,7 +1238,7 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_11d
+match_08d
 </td>
 <td style="text-align:left;">
 Detect <code>x</code> (hybrid taxon) and align to genus
@@ -1258,7 +1261,7 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_11e
+match_08e
 </td>
 <td style="text-align:left;">
 Detect <code>x</code> (hybrid taxon), but fail to align to genus
@@ -1273,7 +1276,7 @@ no match
 NA
 </td>
 <td style="text-align:left;">
-genus
+NA
 </td>
 <td style="text-align:left;">
 NA
@@ -1281,13 +1284,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_12a
+match_09a
 </td>
 <td style="text-align:left;">
 Detect canonical names, by checking first three words in string
 </td>
 <td style="text-align:left;">
-trinomial (from stripped_name_2)
+three words (from stripped_name_2)
 </td>
 <td style="text-align:left;">
 exact
@@ -1306,13 +1309,13 @@ names.
 </tr>
 <tr>
 <td style="text-align:left;">
-match_12b
+match_09b
 </td>
 <td style="text-align:left;">
 Detect canonical names, by checking first three words in string
 </td>
 <td style="text-align:left;">
-trinomial (from stripped_name_2)
+three words (from stripped_name_2)
 </td>
 <td style="text-align:left;">
 exact
@@ -1329,13 +1332,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_13a
+match_09c
 </td>
 <td style="text-align:left;">
 Detect canonical names, by checking first three words in string
 </td>
 <td style="text-align:left;">
-trinomial (from stripped_name_2)
+three words (from stripped_name_2)
 </td>
 <td style="text-align:left;">
 fuzzy
@@ -1352,13 +1355,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_13b
+match_09d
 </td>
 <td style="text-align:left;">
 Detect canonical names, by checking first three words in string
 </td>
 <td style="text-align:left;">
-trinomial (from stripped_name_2)
+three words (from stripped_name_2)
 </td>
 <td style="text-align:left;">
 fuzzy
@@ -1375,13 +1378,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_14a
+match_10a
 </td>
 <td style="text-align:left;">
 Detect canonical names, by checking first two words in string
 </td>
 <td style="text-align:left;">
-binomial (from stripped_name_2)
+two words (from stripped_name_2)
 </td>
 <td style="text-align:left;">
 exact
@@ -1400,13 +1403,13 @@ useful for aligning phrase names.
 </tr>
 <tr>
 <td style="text-align:left;">
-match_14b
+match_10b
 </td>
 <td style="text-align:left;">
 Detect canonical names, by checking first two words in string
 </td>
 <td style="text-align:left;">
-binomial (from stripped_name_2)
+two words (from stripped_name_2)
 </td>
 <td style="text-align:left;">
 exact
@@ -1423,13 +1426,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_15a
+match_10c
 </td>
 <td style="text-align:left;">
 Detect canonical names, by checking first two words in string
 </td>
 <td style="text-align:left;">
-binomial (from stripped_name_2)
+two words (from stripped_name_2)
 </td>
 <td style="text-align:left;">
 fuzzy
@@ -1446,13 +1449,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_15b
+match_10d
 </td>
 <td style="text-align:left;">
 Detect canonical names, by checking first two words in string
 </td>
 <td style="text-align:left;">
-binomial (from stripped_name_2)
+two words (from stripped_name_2)
 </td>
 <td style="text-align:left;">
 fuzzy
@@ -1469,7 +1472,7 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_16a
+match_11a
 </td>
 <td style="text-align:left;">
 Detect canonical names, lacking authorship
@@ -1494,7 +1497,7 @@ the string.
 </tr>
 <tr>
 <td style="text-align:left;">
-match_17a
+match_11b
 </td>
 <td style="text-align:left;">
 Detect canonical names, lacking authorship
@@ -1517,13 +1520,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_18a
+match_11c
 </td>
 <td style="text-align:left;">
 Detect canonical names, by checking first three words in string
 </td>
 <td style="text-align:left;">
-trinomial (from stripped_name_2)
+three words (from stripped_name_2)
 </td>
 <td style="text-align:left;">
 exact
@@ -1540,13 +1543,13 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_19a
+match_11d
 </td>
 <td style="text-align:left;">
 Detect canonical names, by checking first two words in string
 </td>
 <td style="text-align:left;">
-binomial (from stripped_name_2)
+two words (from stripped_name_2)
 </td>
 <td style="text-align:left;">
 exact
@@ -1563,10 +1566,10 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_20a
+match_12a
 </td>
 <td style="text-align:left;">
-Detect an APC-accepted genus, by checking the first word in the string
+Detect genus, by checking the first word in the string
 </td>
 <td style="text-align:left;">
 first word (“genus”)
@@ -1587,10 +1590,10 @@ allowing an alignment to the genus-level or family-level
 </tr>
 <tr>
 <td style="text-align:left;">
-match_20b
+match_12b
 </td>
 <td style="text-align:left;">
-Detect an APC-known genus, by checking the first word in the string
+Detect genus, by checking the first word in the string
 </td>
 <td style="text-align:left;">
 first word (“genus”)
@@ -1610,10 +1613,10 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_20c
+match_12c
 </td>
 <td style="text-align:left;">
-Detect an APC-known genus, by checking the first word in the string
+Detect genus, by checking the first word in the string
 </td>
 <td style="text-align:left;">
 first word (“genus”)
@@ -1633,10 +1636,10 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_21a
+match_12d
 </td>
 <td style="text-align:left;">
-Detect an APC-known family, by checking the first word in the string
+Detect family, by checking the first word in the string
 </td>
 <td style="text-align:left;">
 first word (“genus”)
@@ -1656,10 +1659,33 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_22a
+match_12e
 </td>
 <td style="text-align:left;">
-Detect an APC-accepted genus, by checking the first word in the string
+Detect family, by checking the first word in the string
+</td>
+<td style="text-align:left;">
+first word (“genus”)
+</td>
+<td style="text-align:left;">
+exact
+</td>
+<td style="text-align:left;">
+other APC taxon concepts
+</td>
+<td style="text-align:left;">
+family
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+match_12f
+</td>
+<td style="text-align:left;">
+Detect genus, by checking the first word in the string
 </td>
 <td style="text-align:left;">
 first word (“genus”)
@@ -1679,10 +1705,10 @@ NA
 </tr>
 <tr>
 <td style="text-align:left;">
-match_22b
+match_12g
 </td>
 <td style="text-align:left;">
-Detect an APC-known genus, by checking the first word in the string
+Detect genus, by checking the first word in the string
 </td>
 <td style="text-align:left;">
 first word (“genus”)
@@ -1700,17 +1726,86 @@ genus
 NA
 </td>
 </tr>
+<tr>
+<td style="text-align:left;">
+match_12h
+</td>
+<td style="text-align:left;">
+Detect family, by checking the first word in the string
+</td>
+<td style="text-align:left;">
+first word (“genus”)
+</td>
+<td style="text-align:left;">
+fuzzy
+</td>
+<td style="text-align:left;">
+APC accepted taxon concepts
+</td>
+<td style="text-align:left;">
+family
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+match_12i
+</td>
+<td style="text-align:left;">
+Detect family, by checking the first word in the string
+</td>
+<td style="text-align:left;">
+first word (“genus”)
+</td>
+<td style="text-align:left;">
+fuzzy
+</td>
+<td style="text-align:left;">
+other APC taxon concepts
+</td>
+<td style="text-align:left;">
+family
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
 </tbody>
 </table>
 </div>
 <div id="updating-taxonomy" class="section level1">
 <h1>Updating taxonomy</h1>
-XXX
+<p>The following table indicates the separate functions used to:</p>
+<ul>
+<li>update aligned names to accepted names in the APC</li>
+<li>add best-practice suggested names to all submitted names</li>
+<li>add identifiers to taxon concepts (in the APC) or scientific names
+(in the APC or APNI)</li>
+</ul>
+<p>Different functions are used depending on the taxon rank of the
+aligned name and the taxonomic dataset to which the name was aligned
+(APC vs APNI).</p>
 <table class="table table-striped table-hover table-condensed table-responsive" style="margin-left:30px; width: auto !important; ">
 <thead>
 <tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="4">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+categories of aligned names processed
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+columns filled in
+</div>
+</th>
+</tr>
+<tr>
 <th style="text-align:left;">
-…1
+function name
 </th>
 <th style="text-align:left;">
 taxonomic dataset
@@ -1842,7 +1937,7 @@ yes
 </tr>
 <tr>
 <td style="text-align:left;">
-taxonomic_splits = “most_likely_species”
+– taxonomic_splits = “most_likely_species”
 </td>
 <td style="text-align:left;">
 NA
@@ -1868,7 +1963,7 @@ yes
 </tr>
 <tr>
 <td style="text-align:left;">
-taxonomic_splits = “return_all”
+– taxonomic_splits = “return_all”
 </td>
 <td style="text-align:left;">
 NA
@@ -1894,7 +1989,7 @@ yes
 </tr>
 <tr>
 <td style="text-align:left;">
-taxonomic_splits = “collapse_to_higher_taxon”
+– taxonomic_splits = “collapse_to_higher_taxon”
 </td>
 <td style="text-align:left;">
 NA
@@ -1946,7 +2041,7 @@ yes
 </tr>
 <tr>
 <td style="text-align:left;">
-not required
+(names not aligned)
 </td>
 <td style="text-align:left;">
 (not aligned)
@@ -1970,91 +2065,16 @@ no
 no
 </td>
 </tr>
-<tr>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-<ul>
-<li>genus updated to APC accepted genus if possible
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-** species or infraspecific taxon name
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-NA
-</td>
-</tr>
 </tbody>
-</table></li>
-</ul>
+</table>
+<p>-* genus updated to APC accepted genus if possible; ** species or
+infraspecific taxon name</p>
 </div>
 <div id="outputs-of-apcalign" class="section level1">
 <h1>Outputs of APCalign</h1>
+<p>The following columns are output by the core function
+<code>create_taxonomic_update_lookup</code> and the two component
+functions <code>align_taxa</code> and <code>update_taxonomy</code>.</p>
 <table class="table table-striped table-hover table-condensed table-responsive" style="margin-left:30px; width: auto !important; ">
 <thead>
 <tr>
@@ -2113,8 +2133,8 @@ default
 </td>
 <td style="text-align:left;">
 The suggested plant name to use. Identical to the accepted_name when an
-accepted_name exists; otherwise the the suggested_name is the
-aligned_name.
+accepted_name exists; otherwise the suggested_name is the aligned_name
+or the aligned name with an outdated genus updated.
 </td>
 </tr>
 <tr>
@@ -2229,8 +2249,8 @@ scientific_name_authorship
 default
 </td>
 <td style="text-align:left;">
-The authorship information for the accepted (or known) name; available
-for both APC and APNI names.
+The authorship information for the accepted (or synonymous) name;
+available for both APC and APNI names.
 </td>
 </tr>
 <tr>

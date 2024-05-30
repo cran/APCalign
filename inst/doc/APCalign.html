@@ -49,7 +49,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -342,7 +342,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <p>When working with biodiversity data, it is important to verify
 taxonomic names with an authoritative list and correct any out-of-date
-names. The ‘APCalign’ package simplifies this process by:</p>
+names. The <code>APCalign</code> package simplifies this process by:</p>
 <ul>
 <li>Accessing up-to-date taxonomic information from the <a href="https://biodiversity.org.au/nsl/services/search/taxonomy">Australian
 Plant Census</a> and the <a href="https://biodiversity.org.au/nsl/services/search/names">Australia
@@ -354,14 +354,11 @@ manner</li>
 </ul>
 <div id="installation" class="section level2">
 <h2>Installation</h2>
-<p>‘APCalign’ is currently not on CRAN. You can install its current
-developmental version using</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># install.packages(&quot;remotes&quot;)</span></span>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;remotes&quot;</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;traitecoevo/APCalign&quot;</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(APCalign)</span></code></pre></div>
-<p>To demonstrate how to use ‘APCalign’, we will use an example dataset
-<code>gbif_lite</code> which is documented in
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(APCalign)</span></code></pre></div>
+<p>To demonstrate how to use <code>APCalign</code>, we will use an
+example dataset <code>gbif_lite</code> which is documented in
 <code>?gbif_lite</code></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">dim</span>(gbif_lite)</span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&gt; [1] 129   7</span></span>
@@ -383,7 +380,8 @@ developmental version using</p>
 <h2>Retrieve taxonomic resources</h2>
 <p>The first step is to retrieve the entire APC and APNI name databases
 and store them locally as taxonomic resources. We achieve this using
-<code>load_taxonomic_resources()</code>.</p>
+<code>load_taxonomic_resources()</code>. The resources are compressed as
+parquet files to speed download and local loading.</p>
 <p>There are two versions of the databases that you can retrieve with
 the <code>stable_or_current_data</code> argument. Calling:</p>
 <ul>
@@ -393,14 +391,12 @@ releases</a>. This is set as the default option.</li>
 <li><code>current</code> will retrieve the up-to-date databases directly
 from the APC and APNI website.</li>
 </ul>
-<p>Note that the databases are quite large so the initial retrieval of
-<code>stable</code> versions will take a few minutes. Once the taxonomic
-resources have been stored locally, subsequent retrievals will take less
-time. Retrieving <code>current</code> resources will always take longer
-since it is accessing the latest information from the website. Check out
-our <a href="https://traitecoevo.github.io/APCalign/articles/caching.html">Resource
-Caching</a> article to learn more about how the APC and APNIC databases
-are accessed, stored and retrieved.</p>
+<p>Note that the databases are reasonably large so the initial retrieval
+of the core data will take a few minutes. Once the taxonomic resources
+have been stored locally, subsequent retrievals will take less time.
+Retrieving <code>current</code> resources will always take longer since
+it is accessing the latest information from the website in an
+uncompressed format.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Benchmarking the retrieval of `stable` or `current` resources</span></span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>stable_start_time <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>()</span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>stable_resources <span class="ot">&lt;-</span> <span class="fu">load_taxonomic_resources</span>(<span class="at">stable_or_current_data =</span> <span class="st">&quot;stable&quot;</span>)</span>
@@ -542,7 +538,7 @@ aligned and updated.</p>
 <li>Clean up your taxonomic names
 <ul>
 <li>The functions <code>standardise_names</code>,
-<code>strip_names</code> and <code>strip_names_2</code> standardise
+<code>strip_names</code> and <code>strip_names_extra</code> standardise
 infraspecific taxon designations and clean up punctuation and
 whitespaces</li>
 </ul></li>

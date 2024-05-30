@@ -54,7 +54,8 @@ match_taxa_documentation %>%
 
 ## ----results='show'-----------------------------------------------------------
 update_taxonomy_documentation %>%
-  my_kable_styling()
+  my_kable_styling() %>%
+  kableExtra::add_header_above(c(" " = 1, "categories of aligned names processed" = 4, "columns filled in" = 3))
 
 ## ----results='show'-----------------------------------------------------------
 APCalign_outputs_documentation %>%
