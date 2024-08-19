@@ -1,6 +1,6 @@
 Package: APCalign
 Title: Resolving Plant Taxon Names Using the Australian Plant Census
-Version: 1.0.2
+Version: 1.1.0
 Authors@R: c(
   person(given = "Daniel", family = "Falster", role = c("aut", "cre", "cph"), email = "daniel.falster@unsw.edu.au", comment = c(ORCID = "0000-0002-9814-092X")),
   person(given = "Elizabeth", family = "Wenk", role = c("aut", "ctb"), email = "e.wenk@unsw.edu.au", comment = c(ORCID = "0000-0001-5640-5910")),
@@ -25,7 +25,7 @@ URL: https://traitecoevo.github.io/APCalign/,
         https://github.com/traitecoevo/APCalign
 BugReports: https://github.com/traitecoevo/APCalign/issues
 NeedsCompilation: no
-Packaged: 2024-08-03 05:08:43 UTC; dfalster
+Packaged: 2024-08-18 23:49:04 UTC; dfalster
 Author: Daniel Falster [aut, cre, cph]
     (<https://orcid.org/0000-0002-9814-092X>),
   Elizabeth Wenk [aut, ctb] (<https://orcid.org/0000-0001-5640-5910>),
@@ -34,4 +34,4 @@ Author: Daniel Falster [aut, cre, cph]
   Carl Boettiger [ctb] (<https://orcid.org/0000-0002-1642-628X>)
 Maintainer: Daniel Falster <daniel.falster@unsw.edu.au>
 Repository: CRAN
-Date/Publication: 2024-08-17 23:20:21 UTC
+Date/Publication: 2024-08-19 12:00:23 UTC

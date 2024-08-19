@@ -1,7 +1,7 @@
-478f19fa503f111c8d3dfb6e9691b7ae *DESCRIPTION
+4995c53406a5e4efa35966802e82c284 *DESCRIPTION
 fa99e825ca030da4fc32f7db12b06024 *LICENSE
-8ba4d3e3a93c383888eb20dc0e8989a9 *NAMESPACE
-b03b0f3b25120bfeab0935e3a7b596e4 *NEWS.md
+85a4c99bd5b7f407f88c7847f823a29c *NAMESPACE
+0a8b89e268fc78e0c852037610f67f3b *NEWS.md
 857f57e3e172416f074a498b2e27286d *R/APCalign-package.R
 55368aa006e9522f7e97c6802084c758 *R/align_taxa.R
 9c689bb301ab50f8dcf88dd7ea9a7141 *R/create_species_state_origin_matrix.R
@@ -15,11 +15,11 @@ dea984662411416190baadd8b1c7bb03 *R/load_taxonomic_resources.R
 5dd4f6fd59a1cb575e35965687e45ab5 *R/reexports.R
 81dfa8c5901ea37645b44b26c821fbf7 *R/release.R
 e56fdaa30f0bc0e12e8d86012deb2c4b *R/standardise_names.R
-1ca59d7cdb3f1aad610486b833c3a363 *R/state_diversity_counts.R
+63adbc70ab7a82794fc55fc9def6cd3d *R/state_diversity_counts.R
 14f44d53075c79aad906ba142ac8f116 *R/strip_names.R
 8c4f16d9c9a910fd307ec1bf2de2d64d *R/update_taxonomy.R
 ac2d7f31fbb339915b2da925887ca8c0 *R/word.R
-c11f3c173d8e32a2058bea2a2dd0c84d *README.md
+3429c79e0612b3d13d3c14705b295c39 *README.md
 6c4d7957daf39ba9a553c8c23f00578f *build/vignette.rds
 bec0a2f8fd28c9794810f2fca4735b0f *data/gbif_lite.rda
 9028c1fc41cbef32996f52ace870a114 *inst/CITATION
@@ -43,6 +43,7 @@ eeaac063651eae03beef2fe63d442428 *man/figures/APCalign_hex_2.svg
 5528caaa084f4b34b53c2660ff832c41 *man/figures/data_providers.png
 5955357bd9f8f037908dee00026e0659 *man/figures/standardise_taxonomy_workflow.png
 171730805d8b8e10729f1fcace24e670 *man/gbif_lite.Rd
+6af86e1029bb1a3bab653608c41231d7 *man/get_apc_genus_family_lookup.Rd
 d9b9217b52c9ab0dcf680dd714418d92 *man/load_taxonomic_resources.Rd
 0cb1f52adfc3e76fc240817a280454ef *man/native_anywhere_in_australia.Rd
 772c0db24485b252f175bad78554930c *man/reexports.Rd
@@ -54,6 +55,7 @@ c9cc5dc75d634ef71e641971ff1cf299 *man/strip_names_extra.Rd
 0c724df55982f3dfbb5222a5e6a9162d *man/update_taxonomy.Rd
 ea0960688698574f6d21bf3dc0209b6d *tests/testthat.R
 915aefdcb16c76455989423cdba0e906 *tests/testthat/benchmarks/consistency_lookup.csv
+cf0e39d746ed3bd139aed2e580c11c0a *tests/testthat/benchmarks/family_check.csv
 f8a3b0037c47a3eefc76fae19af93587 *tests/testthat/benchmarks/native_check.csv
 5fad48fbcc83a5e00a339cebd6d1a930 *tests/testthat/benchmarks/standardise_names.csv
 38af9158fee61e709d5feee19ea14a49 *tests/testthat/benchmarks/state_diversity.csv
@@ -65,7 +67,7 @@ b243c470eb8a8020b4ee62bfea1cf6b3 *tests/testthat/helper.R
 8fc976d4a50de82d46b96bbde2ec8682 *tests/testthat/test-functions-word.R
 f468338f1259aa1f61b8db2693081682 *tests/testthat/test-operation_executes.R
 f0b566524c2bf4a7574b0016e6e50c3d *tests/testthat/test-operation_outputs.R
-02f2afdd8eb137b07320e1cdea56df9b *tests/testthat/test-state_diversity.R
+f14b8a95bdce0a42efe5b15c523ceceb *tests/testthat/test-state_diversity.R
 2478a1079352a1d3c98bc7d0db777c3d *vignettes/APCalign.Rmd
 d5229110a0f1c88796eb5585c5c52c17 *vignettes/APCalign.Rmd.orig
 cbfc4f351c55ef5e290a3ca906795d51 *vignettes/updating-taxon-names.Rmd
