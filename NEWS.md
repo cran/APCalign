@@ -1,5 +1,6 @@
+# APCalign 1.1.2
 
-# APCalign 1.1.0
+- Added `get_versions()`
 
 - Create a genus->family lookup from the specified APC release 
 
