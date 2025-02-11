@@ -1,7 +1,7 @@
-1e48cb39f2d172547fa5db61b5c9359f *DESCRIPTION
+3ed0d83cac8f8a010cf9eea072f2c110 *DESCRIPTION
 fa99e825ca030da4fc32f7db12b06024 *LICENSE
 1d4b5690d04493071e9f6faaac92e1a9 *NAMESPACE
-b33fcd0aa8145fa4fe85494aa2d2f974 *NEWS.md
+472f8ea6cc63b61631ca7eab926a4736 *NEWS.md
 fb83ecc0c6c5b8035806f62e60222704 *R/APCalign-package.R
 55368aa006e9522f7e97c6802084c758 *R/align_taxa.R
 9c689bb301ab50f8dcf88dd7ea9a7141 *R/create_species_state_origin_matrix.R
@@ -72,7 +72,7 @@ d63f3d6941f39d20e75a6743070d1dd8 *tests/testthat/test-connection.R
 f468338f1259aa1f61b8db2693081682 *tests/testthat/test-operation_executes.R
 f0b566524c2bf4a7574b0016e6e50c3d *tests/testthat/test-operation_outputs.R
 f14b8a95bdce0a42efe5b15c523ceceb *tests/testthat/test-state_diversity.R
-1ba657482867d969d278a2bb5a909886 *tests/testthat/test-versions.R
+8b5b2cc63f47be69b59bd42d5dec8ad3 *tests/testthat/test-versions.R
 3afb3b382d103a9bfab2faa4c94464e5 *vignettes/APCalign.Rmd
 6222bb14238479999defdacb2fd03416 *vignettes/APCalign.Rmd.orig
 cbfc4f351c55ef5e290a3ca906795d51 *vignettes/updating-taxon-names.Rmd
