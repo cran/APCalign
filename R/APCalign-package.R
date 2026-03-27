@@ -14,7 +14,7 @@
 #' [GitHub repository](https://github.com/traitecoevo/APCalign/issues)
 #' @keywords internal
 #' @section Functions:
-#' **Standarise taxon names**
+#' **Standardise taxon names**
 #'
 #' * [load_taxonomic_resources]
 #' * [create_taxonomic_update_lookup]
@@ -100,7 +100,11 @@ utils::globalVariables(
     "alternative_accepted_name_tmp",
     "pro_parte",
     "suggested_collapsed_name",
-    "versions"
+    "versions",
+    "name_with_status",
+    "synonyms",
+    "taxon_name",
+    "species"
   )
 )
 

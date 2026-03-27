@@ -313,11 +313,11 @@ align_taxa <- function(original_name,
     # check unknown taxa
     message(
     "  -> ",
-    crayon::blue(sum(!is.na(taxa$checked$accepted_name), na.rm = T)),
+    crayon::blue(sum(!is.na(taxa$checked$accepted_name), na.rm = TRUE)),
     " names already matched; ",
     crayon::blue(sum(
       is.na(taxa$checked$accepted_name),
-      na.rm = T
+      na.rm = TRUE
     )),
     " names checked but without a species-level match; ",
     crayon::blue(sum(!is.na(taxa$tocheck$original_name))),
@@ -330,15 +330,23 @@ align_taxa <- function(original_name,
   if (!all(taxa$tocheck$checked)) {
 
   perfect_matches <- taxa$tocheck %>%
-    dplyr::filter(original_name %in% resources$`APC list (accepted)`$canonical_name) %>%
+    dplyr::filter(original_name %in% resources$APC_accepted$canonical_name) %>%
     dplyr::distinct(original_name) %>%
     nrow()
-  
+
+  synonym_matches <- taxa$tocheck %>%
+    dplyr::filter(original_name %in% resources$APC_synonyms$canonical_name) %>%
+    dplyr::filter(!original_name %in% resources$APC_accepted$canonical_name) %>%
+    dplyr::distinct(original_name) %>%
+    nrow()
+
   if(!quiet)
     message(
       "  -> of these ",
       crayon::blue(perfect_matches),
-      " names have a perfect match to a scientific name in the APC. 
+      " names have a perfect match to an accepted scientific name in the APC, and ",
+      crayon::blue(synonym_matches),
+      " names have a perfect match to a synonym in the APC.
       Alignments being sought for remaining names."
     )
   }

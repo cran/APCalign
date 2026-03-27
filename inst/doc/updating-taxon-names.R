@@ -10,7 +10,6 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 library(APCalign)
 library(readr)
 library(dplyr)
-library(here)
 
 #' Format table with kable and default styling for html
 #'

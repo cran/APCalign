@@ -296,3 +296,74 @@ test_that("No warnings if trying to match input name to empty accepted name set.
     ), NA)
 }
 )
+
+test_that("synonyms_for_accepted_names outputs expected number of rows", {
+  
+  expect_silent(
+    synonyms_T <- synonyms_for_accepted_names(
+      accepted_names = c("Justicia tenella", "Acacia aneura"), 
+      collapse = TRUE, resources = resources
+    )
+  )
+
+  expect_silent(
+    synonyms_F <- synonyms_for_accepted_names(
+      accepted_names = c("Justicia tenella", "Acacia aneura", "Cardamine gunnii"), 
+      collapse = FALSE, resources = resources
+    )
+  )
+  
+  expect_equal(
+    nrow(synonyms_T),
+    2
+  )
+  
+  expect_silent(
+    synonyms_F <- synonyms_for_accepted_names(
+      accepted_names = c("Justicia tenella", "Acacia aneura", "Cardamine gunnii"), 
+      collapse = FALSE, resources = resources
+    )
+  )
+  
+  # currently there are 15 rows, but this can increase with additional synonyms being added
+  expect_gte(
+    nrow(synonyms_F),
+    14
+  )
+  
+  expect_gte(
+    nrow(synonyms_F),
+    nrow(synonyms_T)
+  )
+  
+  expect_contains(synonyms_F$synonym, "Racosperma aneurum")
+  expect_contains(synonyms_F$synonym, "Cardamine heterophylla")
+  expect_no_error(stringr::str_detect(synonyms_T$synonyms, "Racosperma aneurum"))
+  expect_no_error(stringr::str_detect(synonyms_T$synonyms, "Cardamine heterophylla"))
+  
+  
+  expect_equal(
+    names(synonyms_T), 
+    c("family", "accepted_name", "synonyms", "scientific_name", "accepted_name_usage_ID"))
+
+  expect_equal(
+    names(synonyms_F), 
+    c("family", "accepted_name", "synonym", "taxonomic_status", "scientific_name", "accepted_name_usage_ID", "taxon_ID"))
+
+  expect_equal(
+    nrow(synonyms_F),
+    length(unique(synonyms_F$taxon_ID))
+  )
+  
+  expect_equal(
+    length(unique(synonyms_F$synonym)),
+    length(unique(synonyms_F$taxon_ID))
+  )
+  
+  expect_equal(
+    length(unique(synonyms_F$accepted_name)),
+    length(unique(synonyms_F$accepted_name_usage_ID))
+  )
+  
+}
+)

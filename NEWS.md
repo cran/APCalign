@@ -1,3 +1,18 @@
+# APCalign 2.0.0
+
+- New function `synonyms_for_accepted_names()` to list synonyms for currently accepted taxon names.
+- `load_taxonomic_resources()` now caches results in memory for the duration of the R session, so repeated calls with the same version return immediately without re-downloading or re-processing data.
+- New function `clear_cached_resources()` to remove the session cache and force a reload.
+- `load_taxonomic_resources()` now works offline when parquet files have been previously downloaded; `default_version()` falls back to the most recently cached local version when no internet connection is available.
+- Internal taxonomic resource tables renamed to snake_case; `family` column added to resource tables.
+- Functions `create_species_state_origin_matrix()` and `state_diversity_counts()` now includes the parameter `include_infrataxa`, allowing users to select whether just species-rank taxa or species and infra-specific taxa are output in the table. When `create_species_state_origin_matrix()` is called by `native_anywhere_in_australia()`, `include_infrataxa = TRUE` is set as the default, so infrataxa can also be checked by this function.
+
+# APCalign 1.1.6
+
+- Fix issue #262: filter to accepted species only in genus-family lookup
+- Skip problematic tests on CRAN
+- Update maintainer to Elizabeth Wenk, reflecting her leading role in writing the core of the package algorithms and maintaining it going forward.
+
 # APCalign 1.1.3
 
 - Failing gracefully for the edge case when the internet is up generally but github is down for a few seconds
@@ -10,7 +25,7 @@
 
 # APCalign 1.0.2
 
-Minor update to fix 
+Minor update to fix issues
 
 - Deal with the vignette issues that emerged on CRAN 
 - Improve "graceful failing", based on issues that have come up on github CI

@@ -118,7 +118,7 @@ standardise_names <- function(taxon_names) {
     f("(\\s|\\()s\\.lat\\.(\\s|\\))", "") %>%
     f("(\\s|\\()s\\.str\\.(\\s|\\))", "") %>%
     
-    ## standarise "ser"
+    ## standardise "ser"
     f("\\sser(\\s|\\.\\s)", " ser. ") %>%
     f("\\sseries(\\s|\\.\\s)", " ser. ") %>%
 
@@ -133,7 +133,7 @@ standardise_names <- function(taxon_names) {
 #' the first two words of the taxon name are extracted (e.g. "x Cynochloris"),
 #' while for a non-hybrid genus just the first word is extracted (e.g. "Banksia").
 #'
-#' @param taxon_name 
+#' @param taxon_name A character vector of scientific names.
 #'
 #' @return The genus for a scientific name.
 #'
@@ -143,18 +143,24 @@ standardise_names <- function(taxon_names) {
 #' @keywords internal
 #' @noRd
 extract_genus <- function(taxon_name) {
-  
-  taxon_name <- standardise_names(taxon_name)
 
+  taxon_name <- standardise_names(taxon_name)
+  extract_genus_clean(taxon_name)
+}
+
+# Fast genus extraction for already-clean canonical names (e.g. from APC/APNI).
+# Skips standardise_names() since the input is known to be clean.
+#' @noRd
+extract_genus_clean <- function(taxon_name) {
   genus <- stringr::str_split_i(taxon_name, " |\\/", 1) %>% stringr::str_to_sentence()
-  
-  # Deal with names that being with x, 
+
+  # Deal with names that begin with x,
   # e.g."x Taurodium x toveyanum" or "x Glossadenia tutelata"
-  i <- !is.na(genus) & genus =="X"
-  
-  genus[i] <- 
-    stringr::str_split_i(taxon_name[i], " |\\/", 2) %>% stringr::str_to_sentence() %>%  paste("x", .)
-  
+  i <- !is.na(genus) & genus == "X"
+
+  genus[i] <-
+    stringr::str_split_i(taxon_name[i], " |\\/", 2) %>% stringr::str_to_sentence() %>% paste("x", .)
+
   genus
 }
 
