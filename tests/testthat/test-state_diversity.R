@@ -16,7 +16,7 @@ test_that("create_species_state_origin_matrix() works", {
 
 test_that("state_diversity() works", {
   nsw_species_counts <-
-    state_diversity_counts(state = "NSW", resources = resources, include_infrataxa = F)
+    state_diversity_counts(state = "NSW", resources = resources, include_infrataxa = FALSE)
   expect_true(
     sum(nsw_species_counts$num_species) > 7000 &
       sum(nsw_species_counts$num_species) < 10000
@@ -32,13 +32,13 @@ test_that("state_diversity() works", {
   expect_equal(ss_subset, sd)
 })
 
-test_that("state_diversity() works with `include_infrataxa = T`", {
-  
+test_that("state_diversity() works with `include_infrataxa = TRUE`", {
+
   nsw_species_counts_infrataxa <-
-    state_diversity_counts(state = "NSW", resources = resources, include_infrataxa = T)
-  
+    state_diversity_counts(state = "NSW", resources = resources, include_infrataxa = TRUE)
+
   nsw_species_counts <-
-    state_diversity_counts(state = "NSW", resources = resources, include_infrataxa = F)
+    state_diversity_counts(state = "NSW", resources = resources, include_infrataxa = FALSE)
   
   expect_gt(
     sum(nsw_species_counts_infrataxa$num_species),
@@ -62,6 +62,21 @@ test_that("native_anywhere_in_australia() works", {
   previous_check <- readr::read_csv("benchmarks/native_check.csv", show_col_types = FALSE)
   expect_equal(native_check, previous_check)
   expect_warning(native_anywhere_in_australia(species = "NOTASPECIES", resources = resources))
+})
+
+
+test_that("is_native_anywhere() reads only the state columns", {
+  # `nativitatis` is a real APC epithet (three Christmas Island taxa), so the
+  # taxon name must never be allowed to decide native status on its own.
+  lookup <- dplyr::tibble(
+    family = c("Orchidaceae", "Poaceae", "Pittosporaceae"),
+    species = c("Flickingeria nativitatis", "Ischaemum nativitatis", "Pittosporum undulatum"),
+    taxon_ID = c("id-1", "id-2", "id-3"),
+    ChI = c("native", "naturalised", "not present"),
+    NSW = c("not present", "not present", "native and naturalised")
+  )
+
+  expect_equal(is_native_anywhere(lookup), c(TRUE, FALSE, TRUE))
 })
 
 
