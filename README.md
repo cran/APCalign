@@ -72,18 +72,16 @@ create_taxonomic_update_lookup(
     "Commersonia rosea"
     )
 )
+#> # A tibble: 3 × 13
+#>   original_name       aligned_name accepted_name suggested_name genus taxon_rank
+#>   <chr>               <chr>        <chr>         <chr>          <chr> <chr>     
+#> 1 Banksia integrifol… Banksia int… Banksia inte… Banksia integ… Bank… species   
+#> 2 Acacia longifolia   Acacia long… Acacia longi… Acacia longif… Acac… species   
+#> 3 Commersonia rosea   Commersonia… Androcalva r… Androcalva ro… Andr… species   
+#> # ℹ 7 more variables: taxonomic_dataset <chr>, taxonomic_status <chr>,
+#> #   scientific_name <chr>, aligned_reason <chr>, update_reason <chr>,
+#> #   number_of_collapsed_taxa <dbl>, chars_changed <int>
 ```
-
-    #> ================================================================================================================================================================
-    #> # A tibble: 3 × 12
-    #>   original_name       aligned_name accepted_name suggested_name genus taxon_rank
-    #>   <chr>               <chr>        <chr>         <chr>          <chr> <chr>     
-    #> 1 Banksia integrifol… Banksia int… Banksia inte… Banksia integ… Bank… species   
-    #> 2 Acacia longifolia   Acacia long… Acacia longi… Acacia longif… Acac… species   
-    #> 3 Commersonia rosea   Commersonia… Androcalva r… Androcalva ro… Andr… species   
-    #> # ℹ 6 more variables: taxonomic_dataset <chr>, taxonomic_status <chr>,
-    #> #   scientific_name <chr>, aligned_reason <chr>, update_reason <chr>,
-    #> #   number_of_collapsed_taxa <dbl>
 
 You can alternatively load the taxonomic resources into memory first:
 
@@ -111,7 +109,7 @@ create_taxonomic_update_lookup(
     ),
   resources = tax_resources
 )
-#> # A tibble: 16 × 12
+#> # A tibble: 16 × 13
 #>    original_name      aligned_name accepted_name suggested_name genus taxon_rank
 #>    <chr>              <chr>        <chr>         <chr>          <chr> <chr>     
 #>  1 Banksia integrifo… Banksia int… Banksia inte… Banksia integ… Bank… species   
@@ -130,9 +128,9 @@ create_taxonomic_update_lookup(
 #> 14 Panicum sp. Hairy… Panicum sp.… Panicum sp. … Panicum sp. H… Pani… species   
 #> 15 Panicum sp. Hairy… Panicum sp.… Panicum sp. … Panicum sp. H… Pani… species   
 #> 16 not a species      <NA>         <NA>          <NA>           <NA>  <NA>      
-#> # ℹ 6 more variables: taxonomic_dataset <chr>, taxonomic_status <chr>,
+#> # ℹ 7 more variables: taxonomic_dataset <chr>, taxonomic_status <chr>,
 #> #   scientific_name <chr>, aligned_reason <chr>, update_reason <chr>,
-#> #   number_of_collapsed_taxa <dbl>
+#> #   number_of_collapsed_taxa <dbl>, chars_changed <int>
 ```
 
 Checking for a list of species to see if they are classified as
@@ -154,14 +152,14 @@ means:
 state_diversity_counts("NSW", resources = tax_resources)
 #> # A tibble: 7 × 3
 #>   origin                            state num_species
-#>   <chr>                             <chr> <table[1d]>
-#> 1 doubtfully naturalised            NSW     95       
-#> 2 formerly naturalised              NSW      8       
-#> 3 native                            NSW   5982       
-#> 4 native and doubtfully naturalised NSW      2       
-#> 5 native and naturalised            NSW     34       
-#> 6 naturalised                       NSW   1586       
-#> 7 presumed extinct                  NSW      9
+#>   <chr>                             <chr>       <int>
+#> 1 doubtfully naturalised            NSW            95
+#> 2 formerly naturalised              NSW             8
+#> 3 native                            NSW          5986
+#> 4 native and doubtfully naturalised NSW             2
+#> 5 native and naturalised            NSW            34
+#> 6 naturalised                       NSW          1587
+#> 7 presumed extinct                  NSW             9
 ```
 
 The related function `create_species_state_origin_matrix()` generates a
@@ -200,7 +198,7 @@ synonyms_for_accepted_names(resources = tax_resources, accepted_names = names_to
 #> 1 Brassicaceae Cardamine gunnii  Cardami… Cardamine gunn… https://id.biodiversi…
 #> 2 Fabaceae     Acacia aneura     Acacia … Acacia aneura … https://id.biodiversi…
 #> 3 Proteaceae   Banksia nivea     Dryandr… Banksia nivea … https://id.biodiversi…
-#> 4 Proteaceae   Stenocarpus sinu… Cybele … Stenocarpus si… https://id.biodiversi…
+#> 4 Proteaceae   Stenocarpus sinu… Agnostu… Stenocarpus si… https://id.biodiversi…
 ```
 
 ## Cheatsheet
@@ -226,7 +224,7 @@ citation("APCalign")
 #>   Wenk E, Cornwell W, Fuchs A, Kar F, Monro A, Sauquet H, Stephens R,
 #>   Falster D (2024). "APCalign: an R package workflow and app for
 #>   aligning and updating flora names to the Australian Plant Census."
-#>   _Australian Journal of Botany_, *72*(4). R package version: 2.0.1,
+#>   _Australian Journal of Botany_, *72*(4). R package version: 2.1.0,
 #>   <https://doi.org/10.1071/BT24014>.
 #> 
 #> A BibTeX entry for LaTeX users is
@@ -239,7 +237,7 @@ citation("APCalign")
 #>     number = {4},
 #>     year = {2024},
 #>     publisher = {CSIRO Publishing},
-#>     note = {R package version: 2.0.1},
+#>     note = {R package version: 2.1.0},
 #>     url = {https://doi.org/10.1071/BT24014},
 #>   }
 ```
@@ -267,7 +265,7 @@ and the people behind it.
 Contributing? Issues across the family are tracked on one board,
 [AusTraits \#9](https://github.com/orgs/traitecoevo/projects/9), and new
 issues are auto-added. Please read the [issue & labelling
-guide](https://github.com/traitecoevo/austraits-meta/blob/main/governance/issue-guide.md)
+guide](https://github.com/traitecoevo/austraits-meta/blob/master/governance/issue-guide.md)
 in [`austraits-meta`](https://github.com/traitecoevo/austraits-meta) —
 the family’s cross-package knowledge and governance hub — before filing.
 
@@ -280,14 +278,13 @@ University](https://www.westernsydney.edu.au/), [Botanic Gardens of
 Sydney](https://www.botanicgardens.org.au/), [the University of
 Melbourne](https://www.unimelb.edu.au/), the [Atlas of Living
 Australia](https://www.ala.org.au/), and the Australian Government
-[Department of Climate Change, Energy, the Environment and
-Water](https://www.dcceew.gov.au) — and from our [advisory board, data
-contributors, and past
+Department of Climate Change, Energy, the Environment and Water — and
+from our [advisory board, data contributors, and past
 partners](https://austraits.org/team/team-partners.html).
 
 AusTraits is a co-investment partnership with the [Australian Research
 Data Commons](https://ardc.edu.au/) (ARDC) through the Planet Research
 Data Commons ([DOI:
 10.3565/nyk4-4r91](https://doi.org/10.3565/nyk4-4r91)). The ARDC is
-enabled by the Australian Government’s [National Collaborative Research
-Infrastructure Strategy](https://www.education.gov.au/ncris) (NCRIS).
+enabled by the Australian Government’s National Collaborative Research
+Infrastructure Strategy (NCRIS).

@@ -1,3 +1,5 @@
+skip_if_no_resources()
+
 # Tests for the structure (names and column names) of loaded taxonomic resources
 
 test_that("taxonomic resources contains expected tables", {
@@ -7,7 +9,7 @@ test_that("taxonomic resources contains expected tables", {
     names(resources),
     c("APC", "APNI", "APC_accepted", "APC_synonyms", "APNI_names",
       "genera_accepted", "genera_synonym", "genera_APNI", "genera_all",
-      "family_accepted", "family_synonym")
+      "family_accepted", "family_synonym", "hyphenated_words")
   )
 })
 

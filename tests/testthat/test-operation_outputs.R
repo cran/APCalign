@@ -1,3 +1,5 @@
+skip_if_no_resources()
+
 # The tests in this file are primarily designed to check that the results of the
 # taxonomy updating give expected results. 
 # Limited attention is given to checking all possible ways of running a function
@@ -67,9 +69,20 @@ test_that("taxon name splits and complex taxonomic status values work as expecte
       dplyr::arrange(original_name, taxon_ID, taxonomic_status)
   
   expect_equal(benchmarks$original_name, out1$original_name)
-  #expect_equal(benchmarks$accepted_name_usage_ID, out1$taxon_ID)
-  #todo: include test that confirms taxonomic_status in benchmarks is present (str_detect) in either out1$taxonomic_status or out1$alternative_taxonomic_status_aligned
-  
+
+  # Each name resolves to the taxon concept recorded in the benchmark, and the
+  # recorded status is either the status of that alignment or one of the
+  # alternative usages listed in `suggested_name`, e.g. "(pro parte misapplied)".
+  out1_b <- out1[match(benchmarks$original_name, out1$original_name), ]
+  expect_equal(out1_b$taxon_ID, benchmarks$accepted_name_usage_ID)
+  status_found <-
+    benchmarks$taxonomic_status == out1_b$taxonomic_status_aligned |
+    mapply(
+      function(status, name) grepl(paste0("(", status, ")"), name, fixed = TRUE),
+      benchmarks$taxonomic_status, out1_b$suggested_name, USE.NAMES = FALSE
+    )
+  expect_equal(benchmarks$original_name[!status_found], character(0))
+
   out2 <-
     create_taxonomic_update_lookup(
       benchmarks$original_name,
@@ -91,17 +104,42 @@ test_that("taxon name splits and complex taxonomic status values work as expecte
       resources = resources,
       full = TRUE, 
       quiet = TRUE) %>%
-    dplyr::arrange(original_name, taxon_ID, taxonomic_status) %>%
+    dplyr::arrange(original_name, taxon_ID, taxonomic_status)
+
+  # only a name that could be more than one taxon is collapsed (#314)
+  expect_return_all_matches_collapsed(out2, out3)
+  out3 <- out3 %>%
     dplyr::mutate(number_of_collapsed_taxa = ifelse(is.na(number_of_collapsed_taxa), 1, number_of_collapsed_taxa))
-  
+
   rows_gt_1 <- out3 %>% dplyr::filter(number_of_collapsed_taxa > 1)
-  rows_end_sp <- out3 %>% dplyr::filter(stringr::str_detect(suggested_name, "sp."))
-  rows_alt_names <- out3 %>% dplyr::filter(stringr::str_detect(suggested_name, "collapsed names:"))
-  
-  
+  rows_end_sp <- out3 %>% dplyr::filter(grepl(" sp. ", suggested_name, fixed = TRUE))
+  rows_alt_names <- out3 %>% dplyr::filter(grepl("collapsed names:", suggested_name))
+
+  # What collapse_to_higher_taxon returns, as documented in update_taxonomy():
+  # the suggested and accepted names become `Genus sp.`, but the rank, the IDs
+  # and the scientific_name stay those of the most likely taxon.
+  expect_gt(nrow(rows_gt_1), 0)
+  expect_true(all(startsWith(
+    rows_gt_1$suggested_name,
+    paste(rows_gt_1$genus, "sp. [collapsed names: ")
+  )))
+  has_accepted <- !is.na(rows_gt_1$accepted_name)
+  expect_equal(rows_gt_1$accepted_name[has_accepted],
+               paste(rows_gt_1$genus, "sp.")[has_accepted])
+  expect_true(all(rows_gt_1$taxonomic_status[has_accepted] == "accepted"))
+  # when the most likely taxon is not accepted, there is no accepted_name, and
+  # the status is that taxon's (no such name since excluded taxa were dropped, #314)
+  expect_false(any(rows_gt_1$taxonomic_status[!has_accepted] == "accepted"))
+  expect_false(any(rows_gt_1$taxon_rank %in% c("genus", "family")))
+  expect_equal(
+    rows_gt_1$taxon_ID,
+    out1$taxon_ID[match(rows_gt_1$original_name, out1$original_name)]
+  )
+  # including for an aligned name that is itself accepted
+  expect_true(any(rows_gt_1$taxonomic_status_aligned == "accepted"))
+  expect_true(all(rows_gt_1$update_reason == "collapsed to genus due to ambiguity"))
+
   expect_equal(nrow(out1), nrow(out3))
-  #will be less (slightly) because `return_all` excludes misapplied and excluded taxa
-  expect_equal(nrow(out2), sum(out3$number_of_collapsed_taxa)-2)
   expect_equal(nrow(rows_gt_1), nrow(rows_end_sp))
   expect_equal(nrow(rows_gt_1), nrow(rows_alt_names))
   
@@ -118,6 +156,67 @@ test_that("taxon name splits and complex taxonomic status values work as expecte
   
   
   })
+
+test_that("a pro parte name whose usages all lead to one taxon is updated to it (#314)", {
+  # Lycopodium selago has two APC usages (pro parte misapplied, misapplied),
+  # both leading to Huperzia australiana. Ceriops decandra likewise, to
+  # Ceriops pseudodecandra. Blumea hieraciifolia is pro parte misapplied to
+  # Blumea lacera and excluded (not in Australia), which is not a second taxon.
+  # Each is updated as a misapplied name is, under every option.
+  input <- c("Lycopodium selago", "Ceriops decandra", "Blumea hieraciifolia")
+  for (splits in c("most_likely_species", "collapse_to_higher_taxon", "return_all")) {
+    out <- create_taxonomic_update_lookup(
+      input, taxonomic_splits = splits, resources = resources, full = TRUE, quiet = TRUE
+    )
+    expect_equal(out$original_name, input)
+    expect_equal(out$suggested_name,
+                 c("Huperzia australiana", "Ceriops pseudodecandra", "Blumea lacera"))
+    expect_equal(out$accepted_name, out$suggested_name)
+    expect_equal(out$number_of_collapsed_taxa, rep(NA_real_, 3))
+    expect_equal(out$update_reason, rep("pro parte misapplied", 3))
+  }
+})
+
+test_that("an excluded taxon is never returned when a taxon in Australia is possible (#314)", {
+  # Abutilon muticum (pro parte) is a taxonomic synonym of the excluded Abutilon
+  # pannosum and pro parte misapplied to Abutilon guineense. Cassia corymbosa
+  # (not pro parte) is a synonym of the excluded Senna corymbosa and misapplied
+  # to Senna septemtrionalis. Solanum scabrum is only excluded, and stays so.
+  input <- c("Abutilon muticum", "Cassia corymbosa", "Solanum scabrum")
+  for (splits in c("most_likely_species", "collapse_to_higher_taxon", "return_all")) {
+    out <- create_taxonomic_update_lookup(
+      input, taxonomic_splits = splits, resources = resources, full = TRUE, quiet = TRUE
+    )
+    expect_equal(out$suggested_name,
+                 c("Abutilon guineense", "Senna septemtrionalis", "Solanum scabrum"))
+    expect_equal(out$taxonomic_status, c("accepted", "accepted", "excluded"))
+    expect_equal(out$update_reason, c("pro parte misapplied", "misapplied", "excluded"))
+  }
+})
+
+test_that("each possible taxon of a split name is listed once (#314)", {
+  # Agrostis alba is pro parte misapplied to Agrostis stolonifera and misapplied
+  # to Agrostis gigantea: two possible taxa. Acacia acuminata is accepted and
+  # pro parte misapplied to two others.
+  input <- c("Agrostis alba", "Acacia acuminata")
+  most_likely <- create_taxonomic_update_lookup(
+    input, resources = resources, full = TRUE, quiet = TRUE
+  )
+  expect_equal(most_likely$suggested_name, c(
+    "Agrostis stolonifera [alternative possible names: Agrostis gigantea (misapplied)]",
+    "Acacia acuminata [alternative possible names: Acacia lasiocalyx (pro parte misapplied) | Acacia yorkrakinensis subsp. acrita (pro parte misapplied)]"
+  ))
+  collapsed <- create_taxonomic_update_lookup(
+    input, taxonomic_splits = "collapse_to_higher_taxon", resources = resources,
+    full = TRUE, quiet = TRUE
+  )
+  expect_equal(collapsed$suggested_name, c(
+    "Agrostis sp. [collapsed names: Agrostis stolonifera (pro parte misapplied) | Agrostis gigantea (misapplied)]",
+    "Acacia sp. [collapsed names: Acacia acuminata (accepted) | Acacia lasiocalyx (pro parte misapplied) | Acacia yorkrakinensis subsp. acrita (pro parte misapplied)]"
+  ))
+  expect_equal(collapsed$number_of_collapsed_taxa, c(2, 3))
+  expect_equal(collapsed$update_reason, rep("collapsed to genus due to ambiguity", 2))
+})
 
 test_that("taxon name alignment matches and updates work as expected", {
 
@@ -164,6 +263,19 @@ test_that("taxon name alignment matches and updates work as expected", {
   # the benchmark now covers all match branches, including the genus/family
   # fuzzy and "unknown genus" fall-throughs.
   expect_equal(benchmarks$alignment_code, output_align$alignment_code)
+
+  # chars_changed: 0 for every exact match, NA when nothing was aligned, and a
+  # count for every fuzzy step. Every fuzzy step in the benchmark must be listed
+  # in `fuzzy_match_steps`, and everything listed there must be a fuzzy step.
+  aligned <- !is.na(output_align$aligned_name)
+  fuzzy <- grepl("fuzzy", output_align$alignment_code)
+  expect_true(all(is.na(output_align$chars_changed[!aligned])))
+  expect_true(all(output_align$chars_changed[aligned & !fuzzy] == 0L))
+  expect_false(anyNA(output_align$chars_changed[aligned & fuzzy]))
+  expect_setequal(
+    names(fuzzy_match_steps),
+    unique(substr(output_align$alignment_code[fuzzy], 1, 9))
+  )
 
   output_updates <- 
     update_taxonomy(
@@ -342,8 +454,10 @@ test_that("synonyms_for_accepted_names outputs expected number of rows", {
   
   expect_contains(synonyms_F$synonym, "Racosperma aneurum")
   expect_contains(synonyms_F$synonym, "Cardamine heterophylla")
-  expect_no_error(stringr::str_detect(synonyms_T$synonyms, "Racosperma aneurum"))
-  expect_no_error(stringr::str_detect(synonyms_T$synonyms, "Cardamine heterophylla"))
+  expect_true(any(grepl("Racosperma aneurum", synonyms_T$synonyms)))
+  # Cardamine heterophylla is a synonym of Cardamine gunnii, which was not
+  # asked for in `synonyms_T`
+  expect_false(any(grepl("Cardamine heterophylla", synonyms_T$synonyms)))
   
   
   expect_equal(
@@ -371,3 +485,34 @@ test_that("synonyms_for_accepted_names outputs expected number of rows", {
   
 }
 )
+
+test_that("chars_changed counts the characters a fuzzy match changed", {
+  x <- c("Acacia aneura", "eucalyptus regnans", "Acacia aneuraa", "Acaica aneura",
+         "Eucalytpus sp.", "Eucalyptus regnans subsp. regnanss", "Xyzzyplant foo")
+  out <- align_taxa(x, resources = resources, quiet = TRUE)
+  # exact (case is standardised before matching), one added letter, two
+  # swapped letters (one change), a genus-only fuzzy match, a rank marker that
+  # differs (removed before matching) plus one added letter, and no match
+  expect_equal(out$chars_changed, c(0L, 0L, 1L, 1L, 1L, 1L, NA))
+
+  lookup <- create_taxonomic_update_lookup(x, resources = resources, quiet = TRUE)
+  expect_equal(lookup$chars_changed, out$chars_changed)
+})
+
+test_that("chars_changed survives a rerun from a cached output file", {
+  # Rows read back from `output` carry no alignment_code; they must keep the
+  # value they were saved with, not be counted as exact matches.
+  f <- tempfile(fileext = ".csv")
+  on.exit(unlink(f))
+  x <- c("Banksia serrrata", "Acacia aneuraa", "Eucalyptus regnans")
+  first <- create_taxonomic_update_lookup(x, resources = resources, quiet = TRUE, output = f)
+  expect_equal(first$chars_changed, c(1L, 1L, 0L))
+
+  # some names cached, one new
+  second <- create_taxonomic_update_lookup(c(x, "Acacia dealbata"), resources = resources, quiet = TRUE, output = f)
+  expect_equal(second$chars_changed, c(1L, 1L, 0L, 0L))
+
+  # every name cached (align_taxa() returns early)
+  third <- create_taxonomic_update_lookup(c(x, "Acacia dealbata"), resources = resources, quiet = TRUE, output = f)
+  expect_identical(third$chars_changed, c(1L, 1L, 0L, 0L))
+})

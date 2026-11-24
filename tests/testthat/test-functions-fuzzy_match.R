@@ -1,3 +1,5 @@
+skip_if_no_resources()
+
 test_that("fuzzy_match() rejects an affinis/hybrid qualifier masquerading as an ordinary word", {
 
   # Regression test for #291/#294: "Acacia aff. aneura" ("resembles A. aneura, not
@@ -54,6 +56,23 @@ test_that("fuzzy_match() rejects an affinis/hybrid qualifier masquerading as an 
   )
 })
 
+test_that("fuzzy_match() reads only a space-delimited x as a hybrid marker", {
+  # Since #311 strip_names() keeps hyphens, and an "x" joined by one ("mini-x")
+  # was read as a hybrid marker, rejecting every candidate without one (#317).
+  expect_equal(fuzzy_match("anigozanthos mini-x", "anigozanthos minix", 3, 0.2),
+               "anigozanthos minix")
+  expect_equal(fuzzy_match("anigozanthos minix", "anigozanthos mini-x", 3, 0.2),
+               "anigozanthos mini-x")
+  # Likewise "aff" and "cf" joined by a hyphen are not qualifiers
+  expect_equal(fuzzy_match("acacia aff-aneura", "acacia affaneura", 3, 0.2),
+               "acacia affaneura")
+  # A standalone qualifier, at the start, middle or end, still needs a match
+  expect_true(is.na(fuzzy_match("banksia x integrifolia", "banksia integrifolia", 3, 0.2)))
+  expect_true(is.na(fuzzy_match("banksia integrifolia x", "banksia integrifolia", 3, 0.2)))
+  expect_equal(fuzzy_match("persoonia x luciida", "persoonia x lucida", 3, 0.2),
+               "persoonia x lucida")
+})
+
 test_that("align_taxa() caps an affinis-qualified name at genus rank instead of a wrong species match", {
 
   # End-to-end version of the fuzzy_match() regression above: before the fix,
@@ -64,4 +83,30 @@ test_that("align_taxa() caps an affinis-qualified name at genus rank instead of 
   expect_equal(out$aligned_name, "Acacia sp. [Acacia aff. aneura]")
   expect_equal(out$taxon_rank, "genus")
   expect_equal(out$alignment_code, "match_06a_species_affinis_APC_exact")
+})
+
+test_that("a name with no letter does not stop the lookup", {
+  # One such name used to stop the whole batch with "missing value where
+  # TRUE/FALSE needed" in fuzzy_match().
+  expect_true(is.na(fuzzy_match("12 34", resources$genera_accepted$genus, 2, 0.35)))
+  odd <- c("12 34", "1 1/2", "\u00bd", "\u00b1 Acacia")
+  out <- expect_no_error(
+    create_taxonomic_update_lookup(c(odd, "Acacia aneura"), resources = resources)
+  )
+  expect_equal(nrow(out), 5)
+  expect_equal(out$original_name, c(odd, "Acacia aneura"))
+  expect_equal(out$aligned_name[5], "Acacia aneura")
+})
+
+test_that("a word with no letter or digit after the genus does not stop the lookup", {
+  # "+ ~ $ ^ |" are symbols, not punctuation, so strip_names() keeps them; the
+  # word's first letter is NA, and comparing it used to stop the whole batch.
+  expect_true(is.na(fuzzy_match("acacia --", "acacia ab", 5, 1)))
+  expect_true(is.na(fuzzy_match("acacia b", "acacia", 2, 0.35)))
+  odd <- c("Acacia + aneura", "Eucalyptus |", "Eucalyptus ~", "Acacia \u2297 aneura")
+  out <- expect_no_error(
+    create_taxonomic_update_lookup(c(odd, "Acacia aneura"), resources = resources)
+  )
+  expect_equal(out$original_name, c(odd, "Acacia aneura"))
+  expect_equal(out$aligned_name[5], "Acacia aneura")
 })

@@ -1,6 +1,6 @@
 Package: APCalign
 Title: Resolving Plant Taxon Names Using the Australian Plant Census
-Version: 2.0.1
+Version: 2.1.0
 Authors@R: c(
   person(given = "Elizabeth", family = "Wenk", role = c("aut", "cre", "cph"), email = "e.wenk@unsw.edu.au", comment = c(ORCID = "0000-0001-5640-5910")),
   person(given = "Daniel", family = "Falster", role = c("aut", "ctb"), email = "daniel.falster@unsw.edu.au", comment = c(ORCID = "0000-0002-9814-092X")),
@@ -19,19 +19,19 @@ Encoding: UTF-8
 Language: en-GB
 LazyData: true
 Depends: R (>= 4.1.0),
-Imports: readr, purrr, dplyr, stringr, stringi, stringdist, crayon,
-        httr, jsonlite, curl, arrow, rlang
-Suggests: janitor, tidyr, covr, knitr, rmarkdown, kableExtra, here,
-        testthat (>= 3.0.0)
-RoxygenNote: 7.3.3.9000
+Imports: dplyr (>= 1.1.0), stringdist, cli, httr, jsonlite, curl,
+        nanoparquet, rlang (>= 1.0.0)
+Suggests: readr, stringr, stringi, janitor, tidyr, covr, knitr,
+        rmarkdown, kableExtra, testthat (>= 3.3.0), withr
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 URL: https://traitecoevo.github.io/APCalign/,
         https://github.com/traitecoevo/APCalign,
         https://doi.org/10.1071/BT24014
 BugReports: https://github.com/traitecoevo/APCalign/issues
+Config/roxygen2/version: 8.0.0
 NeedsCompilation: no
-Packaged: 2026-09-09 04:10:58 UTC; z3524079
+Packaged: 2026-11-24 06:51:01 UTC; z3524079
 Author: Elizabeth Wenk [aut, cre, cph] (ORCID:
     <https://orcid.org/0000-0001-5640-5910>),
   Daniel Falster [aut, ctb] (ORCID:
@@ -42,4 +42,4 @@ Author: Elizabeth Wenk [aut, cre, cph] (ORCID:
   Carl Boettiger [ctb] (ORCID: <https://orcid.org/0000-0002-1642-628X>)
 Maintainer: Elizabeth Wenk <e.wenk@unsw.edu.au>
 Repository: CRAN
-Date/Publication: 2026-09-09 07:40:27 UTC
+Date/Publication: 2026-11-24 09:30:02 UTC

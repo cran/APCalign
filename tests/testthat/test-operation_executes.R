@@ -1,3 +1,5 @@
+skip_if_no_resources()
+
 # The tests in this file are primarily designed to check that the functions for 
 # taxonomy updating execute with various inputs. Limited attention is given to 
 # the results of the calls, only to check behaviour against input options.
@@ -51,15 +53,12 @@ test_that("create_taxonomic_update_lookup() returns more/less rows as requested"
       resources = resources,
       taxonomic_splits = "collapse_to_higher_taxon",
       quiet = TRUE
-    ) %>%
-    dplyr::mutate(
-      should_collapse = ifelse(number_of_collapsed_taxa > 1, TRUE, FALSE),
-      number_of_collapsed_taxa = ifelse(is.na(number_of_collapsed_taxa), 1, number_of_collapsed_taxa)
     )
 
   expect_equal(nrow(out3), length(original_name))
   expect_equal(out3$original_name, original_name)
-  expect_equal(sum(out3$number_of_collapsed_taxa)-1, nrow(out2))
+  expect_gt(sum(!is.na(out3$number_of_collapsed_taxa)), 0)
+  expect_return_all_matches_collapsed(out2, out3)
   })
 
 test_that("align_taxa() executes - no/with fuzzy", {
@@ -208,7 +207,7 @@ test_that("handles weird strings", {
   
   out_v <- c(rep(NA_character_, nrow(out1)-1), "Banksia serrata")
   expect_equal(out2$aligned_name, out_v)
-  expect_equal(out2$suggested_name, out2$suggested_name)
+  expect_equal(out2$suggested_name, out_v)
   
   })
 
@@ -241,7 +240,7 @@ test_that("handles APNI taxa and genus level IDs",{
   
   expect_gte(nrow(out1), 4)
   
-  expect_false(any(stringr::str_detect(out2$suggested_name, "NA sp.")))
+  expect_false(any(grepl("NA sp.", out2$suggested_name)))
   expect_equal(out2$accepted_name, rep(NA_character_, nrow(out2)))
   
   })
@@ -326,8 +325,8 @@ test_that("returns same number of rows as input, even with duplicates", {
   expect_equal(subset(out2$aligned_name, !duplicated(out2$aligned_name)), subset(out1$aligned_name, !duplicated(out1$aligned_name)))
   expect_equal(subset(out2$aligned_name, !duplicated(out2$aligned_name)), subset(out1$aligned_name, !duplicated(out1$aligned_name)))
   expect_gte(length(out2$aligned_name), length(out1$aligned_name))
-  expect_equal(ncol(out1), 7) #limited columns (full = FALSE, the default)
-  expect_equal(ncol(out4), 26) #all columns (full = TRUE)
+  expect_equal(ncol(out1), 8) #limited columns (full = FALSE, the default)
+  expect_equal(ncol(out4), 27) #all columns (full = TRUE)
   
   #
   expect_equal(out3$original_name, original_name)

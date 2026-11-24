@@ -17,7 +17,8 @@ create_taxonomic_update_lookup(
   APNI_matches = TRUE,
   imprecise_fuzzy_matches = FALSE,
   identifier = NA_character_,
-  resources = load_taxonomic_resources(quiet = quiet),
+  resources = load_taxonomic_resources(stable_or_current_data = stable_or_current_data,
+    version = version, quiet = quiet),
   quiet = FALSE,
   output = NULL
 )
@@ -27,13 +28,16 @@ create_taxonomic_update_lookup(
 with current taxonomy.}
 
 \item{stable_or_current_data}{either "stable" for a consistent version,
-or "current" for the leading edge version.}
+or "current" for the leading edge version. Passed to
+\code{\link[=load_taxonomic_resources]{load_taxonomic_resources()}} when \code{resources} is not given.}
 
-\item{version}{The version number of the dataset to use.}
+\item{version}{The version number of the dataset to use. Passed to
+\code{\link[=load_taxonomic_resources]{load_taxonomic_resources()}} when \code{resources} is not given; when it is,
+the version is that of \code{resources}.}
 
 \item{taxonomic_splits}{How to handle one_to_many taxonomic matches.
-Default is "return_all".  The other options are "collapse_to_higher_taxon"
-and "most_likely_species". most_likely_species defaults to the original_name
+Default is "most_likely_species". The other options are "return_all" and
+"collapse_to_higher_taxon". most_likely_species defaults to the original_name
 if that name is accepted by the APC; this will be right for certain species
 subsets, but make errors in other cases, use with caution.}
 
@@ -52,7 +56,7 @@ infraspecific taxon names are defined by the parameters \code{fuzzy_abs_dist}
 and \code{fuzzy_rel_dist}.}
 
 \item{APNI_matches}{Name matches to the APNI (Australian Plant Names Index)
-are turned off as a default.}
+are turned on as a default.}
 
 \item{imprecise_fuzzy_matches}{Imprecise fuzzy matches uses the fuzzy
 matching function with lenient levels set (absolute distance of
@@ -62,8 +66,9 @@ corresponding to very distant spelling mistakes.
 This is FALSE as default and all outputs should be checked as it often
 makes erroneous matches.}
 
-\item{identifier}{A dataset, location or other identifier,
-which defaults to NA.}
+\item{identifier}{A dataset, location or other identifier, added to the
+aligned names of taxa only aligned to a genus or family. Either a single
+value or one value per name; defaults to NA.}
 
 \item{resources}{These are the taxonomic resources used for cleaning, this
 will default to loading them from a local place on your computer. If this is
@@ -71,29 +76,42 @@ to be called repeatedly, it's much faster to load the resources using
 \code{\link{load_taxonomic_resources}} separately and pass the data in.}
 
 \item{quiet}{Logical to indicate whether to display messages while loading data and
-aligning taxa.}
+aligning taxa. Unless \code{TRUE}, the function ends by printing a summary: how
+many names aligned to a species or infraspecific taxon, to a genus or family
+only, or not at all; how many were updated to a different name; and how
+many could refer to more than one accepted taxon.}
 
-\item{output}{file path to save the output. If this file already exists,
-this function will check if it's a subset of the species passed in and try
-to add to this file. This can be useful for large and growing projects.}
+\item{output}{(optional) A CSV file in which to keep the lookup, so that
+names are only looked up once. If the file already exists (written by an
+earlier call), names already in it (for the same \code{identifier}) are read
+from it rather than looked up again, and the new names are added to it.
+This can be useful for large and growing projects. The file does not
+record the other arguments, so use the same settings and \code{resources} with
+a given file. Requires the 'readr' package.}
 }
 \value{
 A lookup table containing the accepted and suggested names for each
 original name input, and additional taxonomic information such as taxon
-rank, taxonomic status, taxon IDs and genera.
+rank, taxonomic status, taxon IDs and genera. With \code{full = FALSE} (the
+default) the columns are original_name, aligned_name, accepted_name,
+suggested_name, genus, taxon_rank, taxonomic_dataset, taxonomic_status,
+scientific_name, aligned_reason, update_reason, number_of_collapsed_taxa
+and chars_changed; \code{full = TRUE} adds the others below.
 \itemize{
 \item original_name: the original plant name.
 \item aligned_name: the input plant name that has been aligned to a taxon name in
 the APC or APNI by the align_taxa function.
 \item accepted_name: the APC-accepted plant name, when available.
-\item suggested_name: the suggested plant name to use. Identical to the
-accepted_name, when an accepted_name exists;
-otherwise the the suggested_name is the aligned_name.
+\item suggested_name: the suggested plant name to use. The accepted_name, when
+an accepted_name exists, followed for a name affected by a taxonomic
+split by the possible names in square brackets (see \code{taxonomic_splits});
+otherwise the suggested_name is the aligned_name.
 \item genus: the genus of the accepted (or suggested) name;
 only APC-accepted genus names are filled in.
 \item family: the family of the accepted (or suggested) name;
 only APC-accepted family names are filled in.
-\item taxon_rank: the taxonomic rank of the suggested (and accepted) name.
+\item taxon_rank: the taxonomic rank of the suggested (and accepted) name; for a
+name collapsed by \code{collapse_to_higher_taxon}, the rank of the aligned name.
 \item taxonomic_dataset: the source of the suggested (and accepted) names
 (APC or APNI).
 \item taxonomic_status: the taxonomic status of the suggested (and accepted) name.
@@ -106,7 +124,7 @@ before any taxonomic updates have been applied.
 \item subclass: the subclass of the accepted name.
 \item taxon_distribution: the distribution of the accepted name;
 only filled in if an APC accepted_name is available.
-\item scientific_name_authorship: the authorship information for the accepted
+\item scientific_name: the scientific name, with authorship, of the accepted
 (or synonymous) name; available for both APC and APNI names.
 \item taxon_ID: the unique taxon concept identifier for the accepted_name;
 only filled in if an APC accepted_name is available.
@@ -114,9 +132,15 @@ only filled in if an APC accepted_name is available.
 only filled in if an APC-accepted genus name is available.
 \item scientific_name_ID: an identifier for the nomenclatural (not taxonomic)
 details of a scientific name; available for both APC and APNI names.
+\item canonical_name: a copy of suggested_name.
 \item row_number: the row number of a specific original_name in the input.
 \item number_of_collapsed_taxa: when taxonomic_splits == "collapse_to_higher_taxon",
-the number of possible taxon names that have been collapsed.
+the number of possible taxon names that have been collapsed; \code{NA} for a
+name that is not collapsed.
+\item chars_changed: for a fuzzy match, how many characters of the name were
+changed to match the reference name; \code{0} for an exact match; \code{NA} when the
+name was not aligned. Carried over from \code{\link[=align_taxa]{align_taxa()}}, where it is
+described in full.
 }
 }
 \description{
@@ -140,8 +164,8 @@ Notes:
 many times, it is best to load the taxonomic resources separately using
 \code{resources <- load_taxonomic_resources()}, then add the argument
 resources = resources
-\item The name Banksia cerrata does not align as the fuzzy matching algorithm
-does not allow the first letter of the genus and species epithet to change.
+\item The name Banksia cerrata only aligns to the genus (\verb{Banksia sp. \[Banksia cerrata]}), as the fuzzy matching algorithm does not allow the
+first letter of the genus or species epithet to change.
 \item The argument taxonomic_splits allows you to choose the outcome for updating
 the names of taxa with ambiguous taxonomic histories; this applies to
 scientific names that were once attached to a more broadly circumscribed
@@ -150,8 +174,9 @@ taxon concepts, one of which retains the original name. There are three
 options: most_likely_species returns the name that is retained, with
 alternative names documented in square brackets; return_all adds additional
 rows to the output, one for each possible taxon concept;
-collapse_to_higher_taxon returns the genus with possible names in square
-brackets.
+collapse_to_higher_taxon returns \verb{Genus sp.} with the possible names in
+square brackets, while taxon_rank and the IDs stay those of the most likely
+taxon (see \code{\link[=update_taxonomy]{update_taxonomy()}}).
 \item The argument identifier allows you to add a fix text string to all genus-
 and family- level names, such as identifier = "Royal NP" would return
 \verb{Acacia sp. \[Royal NP]}.
@@ -181,9 +206,10 @@ create_taxonomic_update_lookup(
 
 # example 3
 taxon_list <-
-  readr::read_csv(
+  utils::read.csv(
   system.file("extdata", "test_taxa.csv", package = "APCalign"),
-  show_col_types = FALSE)
+  na.strings = c("", "NA"), strip.white = TRUE,
+  fileEncoding = "UTF-8-BOM")
 
 create_taxonomic_update_lookup(
     taxa = taxon_list$original_name,

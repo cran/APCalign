@@ -24,14 +24,32 @@ names are case insensitive.}
 
 \item{taxonomic_splits}{Variable that determines what protocol to use to
 update taxon names that are ambiguous due to taxonomic splits.
-The three options are:
+A name is ambiguous when it has a "pro parte" usage in the APC and its
+usages lead to more than one taxon. A taxon excluded from the APC (not in
+Australia) is never a possible taxon, and a name linked both to an excluded
+taxon and to a taxon in Australia is updated to the latter. A name whose
+usages all lead to one taxon is updated to that taxon under every option, as
+a synonym or a misapplied name is, with update_reason its status (e.g. "pro
+parte misapplied"). For an ambiguous name, the three options are:
 \itemize{
 \item \code{most_likely_species}, which returns the species name in use before the
-split; alternative names are returned in a separate column
-\item \code{return_all}, which returns all possible names
+split; the other possible taxa are listed in square brackets in
+suggested_name, each once, e.g. "Acacia aneura [alternative possible
+names: Acacia minyura (pro parte misapplied) | ...]"
+\item \code{return_all}, which returns all possible names, one row each, except
+taxa the name was (wholly) misapplied to
 \item \code{collapse_to_higher_taxon}, which declares that an ambiguous name cannot
-be aligned to an accepted species/infraspecific name and the name is
-demoted to genus rank
+be assigned to one accepted species/infraspecific name.
+suggested_name becomes "Genus sp. [collapsed names: ...]",
+listing each possible taxon once (number_of_collapsed_taxa of them,
+including taxa the name was misapplied to), and accepted_name becomes
+"Genus sp.", with
+taxonomic_status "accepted"; when the most likely taxon is not itself
+accepted, accepted_name is \code{NA} and taxonomic_status is that taxon's
+status. The other columns are not demoted: taxon_rank stays the rank of
+the aligned name, and taxon_ID, scientific_name and scientific_name_ID
+are those of the most likely taxon (the one \code{most_likely_species}
+returns). update_reason is "collapsed to genus due to ambiguity".
 }}
 
 \item{quiet}{Logical to indicate whether to display messages while updating
@@ -39,7 +57,7 @@ taxa.}
 
 \item{output}{(optional) Name of the file where results are saved. The
 default is NULL and no file is created. If specified, the output will be
-saved in a CSV file with the given name.}
+saved in a CSV file with the given name. Requires the 'readr' package.}
 
 \item{resources}{the taxonomic resources required to make the summary
 statistics.  Loading this can be slow, so call load_taxonomic_resources
@@ -53,14 +71,16 @@ tibble contains the following columns:
 \item aligned_name: the input plant name that has been aligned to a taxon name
 in the APC or APNI by the align_taxa function.
 \item accepted_name: the APC-accepted plant name, when available.
-\item suggested_name: the suggested plant name to use. Identical to the
-accepted_name, when an accepted_name exists; otherwise the the suggested_name
-is the aligned_name.
+\item suggested_name: the suggested plant name to use. The accepted_name, when
+an accepted_name exists, followed for a name affected by a taxonomic split
+by the possible names in square brackets (see \code{taxonomic_splits});
+otherwise the suggested_name is the aligned_name.
 \item genus: the genus of the accepted (or suggested) name; only APC-accepted
 genus names are filled in.
 \item family: the family of the accepted (or suggested) name; only APC-accepted
 family names are filled in.
-\item taxon_rank: the taxonomic rank of the suggested (and accepted) name.
+\item taxon_rank: the taxonomic rank of the suggested (and accepted) name; for a
+name collapsed by \code{collapse_to_higher_taxon}, the rank of the aligned name.
 \item taxonomic_dataset: the source of the suggested (and accepted) names (APC or
 APNI).
 \item taxonomic_status: the taxonomic status of the suggested (and accepted) name.
@@ -73,7 +93,7 @@ aligned name to an accepted or suggested name).
 \item subclass: the subclass of the accepted name.
 \item taxon_distribution: the distribution of the accepted name; only filled in
 if an APC accepted_name is available.
-\item scientific_name_authorship: the authorship information for the accepted
+\item scientific_name: the scientific name, with authorship, of the accepted
 (or synonymous) name; available for both APC and APNI names.
 \item taxon_ID: the unique taxon concept identifier for the accepted_name; only
 filled in if an APC accepted_name is available.
@@ -81,9 +101,15 @@ filled in if an APC accepted_name is available.
 APC-accepted genus name is available.
 \item scientific_name_ID: an identifier for the nomenclatural (not taxonomic)
 details of a scientific name; available for both APC and APNI names.
+\item canonical_name: a copy of suggested_name.
 \item row_number: the row number of a specific original_name in the input.
 \item number_of_collapsed_taxa: when taxonomic_splits == "collapse_to_higher_taxon",
-the number of possible taxon names that have been collapsed.
+the number of possible taxon names that have been collapsed; \code{NA} for a
+name that is not collapsed.
+\item chars_changed: for a fuzzy match, how many characters of the name were
+changed to match the reference name; \code{0} for an exact match; \code{NA} when the
+name was not aligned. Carried over from \code{\link[=align_taxa]{align_taxa()}}, where it is
+described in full.
 }
 }
 \description{
